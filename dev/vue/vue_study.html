@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<script src="vue.js"></script>
+</head>
+<body>
+	<div id="app-7">
+		<ol>
+		<!-- item是定义的一个变量 然后将这个变量bind在了一个叫todo的变量上-->
+			<todo-item v-for="item in todos" v-bind:todo="item"></todo-item>
+		</ol>
+	</div>
+
+
+	<script>
+		Vue.component('todo-item',{
+			props:['todo'],
+			template:'<li>{{todo.text}}</li>'
+		})
+
+		var app7 = new Vue({
+			el: '#app-7',
+			data:{
+				todos:[{text:'fuck'},{text:'shit'},{text:'oh yeah'}]
+			}
+		})
+
+
+		// 属性与方法
+
+
+	</script>
+
+
+	<div id="app-8">
+		<p>{{message|uptobig}}</p>
+	</div>
+	<script>
+
+	// vue.filter
+		// 先搞明白一些js方法=。=
+		//
+		var str1 = "hello world";
+		console.log(str1.charAt(0));
+
+		Vue.filter('uptobig',function(value){
+			if(value){
+				var val = value.toString();
+				return val.charAt(0).toUpperCase() + val.slice(1);
+			}else{
+				return '';
+			}
+		})
+
+		var vm = new Vue({
+			el: '#app-8',
+			data:{
+				message:'hello world'
+			}
+		})
+	</script>
+
+	<div id="app-9">
+		<p>{{ message.split('')}}</p>
+	</div>
+	<script>
+		var app9 = new Vue({
+			el: "#app-9",
+			data:{
+				message:'hello vue'
+			}
+		})
+	</script>
+
+	<!-- 计算属性 -->
+	<div id="app-10">
+		<p>{{message}}</p>
+		<p>已经改变的message：{{changemessage}}</p>
+		<p>methos改变的message：{{methodmessage()}}</p>
+	</div>
+	<script>
+		var app10 = new Vue({
+			el:'#app-10',
+			data:{
+				message:'hello vue'
+			},
+			computed:{
+				changemessage:function(){
+					return Date.now();
+				}
+			},
+			methods:{
+				methodmessage:function(){
+					return Date.now();
+				}
+			}
+
+			// 区别在于当页面中
+			// 当调用app10.methodmessage(),这个数值会不断的变化
+			// 当条用app10.changemessage,这个数值不会变化，只返回缓存中的值
+
+
+			// 改动一下程序
+			// computed:{
+			// 	changemessage:function(){
+			// 		return Date.now();
+			// 	}
+			// },
+			// methods:{
+			// 	methodmessage:function(){
+			// 		return Date.now()
+			// 	}
+			// }
+		})
+	</script>
+
+	<!-- 计算属性 vs watch -->
+	<div id="app-12">{{ fullname}}</div>
+	<script>
+		var app12 = new Vue({
+			el: '#app-12',
+			data:{
+				firstname: 'foo',
+				lastname: 'bar'
+				// fullname:'foo bar'
+			},
+			// watch:{
+			// 	firstname: function(val){
+			// 		this.fullname = val + ',' + this.lastname
+			// 	},
+			// 	lastname:function(val){
+			// 		this.fullname = this.firstname + ',' + val
+			// 	}
+			// },
+			computed:{
+				fullname: function(){
+					return this.firstname + ' ' +this.lastname;
+				}
+			}
+		})
+	</script>
+
+	<script>
+		var vm = new Vue({
+			data:{
+				a:1,
+				b:2,
+				c:3
+			},
+			watch:{
+				a:function(val, oldval){
+					console.log('new: %s, old: %s', val, oldval)
+				},
+				b:function(a, b){
+					console.log(a*b);
+					console.log(a);
+					console.log(b)
+				},
+				c: {
+      				handler: function (val, oldval) {
+      					console.log(val-oldval)
+      				},
+      				deep: false
+    			}
+			}
+		})
+
+		vm.a = 2;
+		vm.b = 10;
+		vm.c = 100;
+	</script>
+
+	<div id="app-13">
+		<p v-if="ok">yes</p>
+		<p v-else>no</p>
+		<template v-if="loginType === 'username'">
+  			<label>Username</label>
+  			<input placeholder="Enter your username">
+		</template>
+		<template v-else>
+  			<label>Email</label>
+  			<input placeholder="Enter your email address">
+		</template>
+	</div>
+	<script>
+		var app13 = new Vue({
+			el: '#app-13',
+			data:{
+				ok: false
+			}
+		})
+	</script>
+
+	<!-- v-for后面是用'=' -->
+	<div id="app-14">
+		<ul>
+			<template v-for="item in items">
+				<li>{{item.text}}</li>
+				<li class="driver">test</li>
+			</template>
+		</ul>
+	</div>
+	<script>
+		var app14 = new Vue({
+			el: '#app-14',
+			data:{
+				items:[{text:'message1'},{text:'message2'}]
+			}
+		})
+	</script>
+
+	<div id="app-15">
+		<ul>
+			<li v-for="(value,key,index) in obj">{{index}}:{{key}}-{{value}}</li>
+		</ul>
+	</div>
+	<script>
+		var app15 = new Vue({
+			el: '#app-15',
+			data:{
+				obj:{
+					firstname: 'zhang',
+					lastname: 'zao',
+					age: 23
+				}
+			}
+		})
+	</script>
+
+	<div id="app-16">
+		<my-component></my-component>
+		<component2></component2>
+		<!-- <testcomponent></testcomponent> -->
+	</div>
+	<script>
+		// 全局绑定
+		Vue.component('my-component',{
+			template:'<div>A custom component!</div>'
+		})
+
+		// 局部绑定
+		var component2 = {
+			template:'<div>another component</div>'
+		}
+
+		new Vue({
+			el: '#app-16',
+			components:{
+				'component2': component2
+			}
+		})
+	</script>
+
+	<div id="app-17">
+		<test></test>
+		<test></test>
+		<test></test>
+	</div>
+	<script>
+		Vue.component('test',{
+			template:'<button v-on:click="counter += 1">{{ counter }}</button>',
+			data(){
+				return {
+					counter: 0
+				}
+			}
+		})
+
+		var app17 = new Vue({
+			el:'#app-17'
+		})
+	</script>
+
+	<div id="app-18">
+		<button id="btn">0</button>
+	</div>
+	<script>
+		var btn = document.getElementById('btn');
+		btn.onclick = function(){
+			var value = parseInt(btn.innerHTML);
+			value = value + 1;
+			btn.innerHTML = '';
+			btn.innerHTML = value;
+		}
+	</script>
+
+	<div id="app-19">
+		<p>{{message}}</p>
+		<child message='hello!'></child>
+	</div>
+	<script>
+		Vue.component('child',{
+			props:['message'],
+			template:'<span>{{message}}</span>'
+		})
+
+		var app19 = new Vue({
+			el:'#app-19',
+			data:{
+				message:'test hello'
+			}
+		})
+	</script>
+
+	<div id="app-20">
+
+		<input v-model="message">
+		<p>{{message}}</p>
+	</div>
+	<script>
+		var app20 = new Vue({
+			el: '#app-20',
+			data:{
+				message:''
+			}
+		})
+	</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
