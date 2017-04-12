@@ -1,2 +1,2 @@
 # vuestudy
-ini
+study vue!!!
